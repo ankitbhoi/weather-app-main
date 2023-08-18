@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en" class="m-0 p-0 font-body box-border">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML & Tailwind CSS Starter Pack</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <link rel="stylesheet" href="./main.css">
+</head>
+
+<body class="bg-gradient-to-r from-slate-800 via-slate-600 to-slate-500">
+    <!-- div for card  -->
+    <div class="w-11/12 max-w-lg bg-gradient-to-r from-pink-400  to-purple-600 text-white mt-24 mx-auto mb-0 rounded-3xl py-10 px-9 text-center">
+        <!-- div for search button -->
+        <div class="flex w-full items-center justify-between search">
+            <input type="text" placeholder="Enter Location" spellcheck="false" class="border-0 outline-none bg-slate-100 text-gray-600 py-2.5 px-6 h-15 rounded-full flex-1 mr-16 text-lg">
+            <button class="border-2 outline-0 rounded-full w-15 h-15 bg-pink-300 cursor-pointer"><i class="fa-solid fa-magnifying-glass text-3xl"></i></button>
+        </div>
+        <div class="error text-left mt-2.5 ml-2.5 text-sm hidden">
+            <p>Invalid City Name</p>
+        </div>
+
+        <!-- div for weather -->
+        <div class="weather hidden">
+            <img src="images/rain.png" class="w-42.5 mt-7.5 mx-auto weather-icon">
+            <h1 class="text-7.5xl font-medium temp">22°C</h1>
+            <h2 class="text-4xl font-normal mt-h2 city">New York</h2>
+            <!-- Details -->
+            <div class="flex items-center justify-between mt-12.5 py-0 px-5">
+                <!-- First Column -->
+                <div class="flex items-center text-left">
+                    <img src="images/humidity.png" class="w-10 mr-2.5">
+                    <!-- Humidity -->
+                    <div>
+                        <p class="text-2.5xl -mt-1.5 humidity">50%</p>
+                        <p>Humidity</p>
+                    </div>
+                </div>
+                <!-- second column -->
+                <div class="flex items-center text-left">
+                    <img src="images/wind.png" class="w-10 mr-2.5">
+                    <!-- Humidity -->
+                    <div>
+                        <p class="text-2.5xl -mt-1.5 Wind">15 kmph</p>
+                        <p>Wind Speed</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+<script>
+
+    const apiKey = "0a364e055afc0cc25e310c3aa63d331e";
+    const apiUrl = "https://api.openweathermap.org/data/2.5/weather?units=metric&q=";
+
+    const searchBox = document.querySelector(".search input");
+    const searchBtn = document.querySelector(".search button");
+    const weatherIcon = document.querySelector(".weather-icon")
+
+    async function checkWeather(city) {
+        const response = await fetch(apiUrl + city + `&appid=${apiKey}`);
+
+        if (response.status == 404) {
+            document.querySelector(".error").style.display = "block";
+            document.querySelector(".weather").style.display = "none";
+        }
+        else {
+            var data = await response.json();
+
+        console.log(data);
+
+        document.querySelector(".city").innerHTML = data.name;
+        document.querySelector(".temp").innerHTML = Math.round(data.main.temp) + "°C";
+        document.querySelector(".humidity").innerHTML = data.main.humidity + "%";
+        document.querySelector(".Wind").innerHTML = data.wind.speed + " km/h";
+
+        if (data.weather[0].main == "Clouds") {
+            weatherIcon.src = "images/clouds.png";
+        }
+        else if (data.weather[0].main == "Clear") {
+            weatherIcon.src = "images/clear.png";
+        }
+        else if (data.weather[0].main == "Rain") {
+            weatherIcon.src = "images/rain.png";
+        }
+        else if (data.weather[0].main == "Drizzle") {
+            weatherIcon.src = "images/drizzle.png";
+        }
+        else if (data.weather[0].main == "Mist") {
+            weatherIcon.src = "images/mist.png";
+        }
+
+        document.querySelector(".weather").style.display="block";
+        document.querySelector(".error").style.display = "none";
+        }
+        
+    }
+
+    searchBtn.addEventListener("click", ()=>{
+        checkWeather(searchBox.value);
+    })
+
+</script>
+
+
+
+
+</body>
+
+</html>
